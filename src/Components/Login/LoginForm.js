@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import RegisterForm from "./RegisterForm";
+import { connect } from "react-redux";
+import { updateUser } from "../../redux/reducers/userReducer";
 
 class LoginForm extends Component {
   constructor() {
@@ -28,6 +30,8 @@ class LoginForm extends Component {
       .post("/auth/login", { user_name, user_password })
       .then(res => {
         //update user
+        console.log(res.data);
+        this.props.updateUser(res.data);
         this.props.handleToggle();
       })
       .catch(err => {
@@ -43,7 +47,7 @@ class LoginForm extends Component {
     return (
       <div>
         <h1>Login</h1>
-        <form onSubmit={this.handleLoginInfoUpdate}>
+        <form onSubmit={this.handleUserLogin}>
           <input
             type="text"
             name="user_name"
@@ -59,7 +63,7 @@ class LoginForm extends Component {
           <button onClick={this.handleUserLogin}>Login</button>
         </form>
         <p>
-          Not a user? Create an account{" "}
+          Not a user? Create an account
           <button onClick={this.handleToggle}>here</button>
         </p>
         {this.state.moduleSeen ? <RegisterForm /> : null}
@@ -67,4 +71,7 @@ class LoginForm extends Component {
     );
   }
 }
-export default LoginForm;
+export default connect(
+  null,
+  { updateUser }
+)(LoginForm);
