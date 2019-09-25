@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
+
 import LoginForm from "../LoginForm/LoginForm";
-import logo from "../../assets/Logo.svg";
+import blueLogo from "../../assets/LogoBlue.svg";
+import citrus from "../../assets/bluecitrus.PNG";
 
 class HomePage extends Component {
   constructor(props) {
@@ -34,38 +36,41 @@ class HomePage extends Component {
       <Body>
         <Header>
           <Logo>
-            <LogoImage src={logo} alt="cal logo" />
+            <LogoImage src={blueLogo} alt="cal logo" />
             <LogoText>caltrend</LogoText>
           </Logo>
 
           <Button onClick={this.openLogin}>login/register</Button>
         </Header>
 
+        <Welcome>
+          <h1>WELCOME</h1>
+          <p>login or register to use caltrend's health tracking tools</p>
+        </Welcome>
         {this.state.loginForm && <LoginForm closeLogin={this.closeLogin} />}
       </Body>
     );
   }
 }
-
 function mapStateToProps(state) {
-  console.log(state);
   return {
     user_id: state.user.data
   };
 }
-
 export default connect(mapStateToProps)(HomePage);
-
-let darkGreen = "#219653";
-let mediumGreen = "#2DB969";
-// let lightGreen = '#36D97C'
-// let darkAccent = '#333333'
-let lightAccent = "#F4F4F4";
-
+// let shadow = '#787878'
+// let mediumShadow = '#636363'
+// let darkAccent = '#5C5C5C'
+let whiteAccent = "#F8F8F8";
+// let lightBlue = '#50B6BB'
+let mediumBlue = "#4BA9AD";
+let darkBlue = "#45969B";
+// let red = '#FF5757'
 const Body = styled.div`
-  background: ${lightAccent};
+  min-height: 100vh;
+  min-width: 100vw;
+  background: ${whiteAccent};
 `;
-
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -76,28 +81,50 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
 `;
-
 const LogoImage = styled.img`
   width: 45px;
   margin: 8px;
 `;
-
 const LogoText = styled.h1`
-  color: ${darkGreen};
+  color: ${darkBlue};
 `;
-
 const Button = styled.button`
   height: 40px;
   width: 120px;
-  background: ${lightAccent};
-  color: ${mediumGreen};
-  border: 1px solid ${darkGreen};
+  background: ${whiteAccent};
+  color: ${mediumBlue};
+  border: 1px solid ${darkBlue};
   margin-right: 10px;
   border: none;
   font-size: 16px;
   &:hover {
-    background: ${mediumGreen};
-    color: ${lightAccent};
+    background: ${mediumBlue};
+    color: ${whiteAccent};
     border-radius: 8px;
+  }
+`;
+const Welcome = styled.div`
+  height: 95vh;
+  background-image: url(${citrus});
+  background-size: cover;
+  background-position: top;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 20px;
+  > h1 {
+    color: ${whiteAccent};
+  }
+  > p {
+    color: ${whiteAccent};
+  }
+  @media (min-width: 500px) {
+    font-size: 30px;
+  }
+  @media (min-width: 1000px) {
+    font-size: 35px;
   }
 `;
