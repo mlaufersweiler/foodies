@@ -2,57 +2,67 @@ const bcrypt = require("bcryptjs");
 
 module.exports = {
   register: async (req, res) => {
-    const { user_name, user_password, user_email } = req.body;
-    const db = req.app.get("db");
-    const { session } = req;
+    try {
+      const db = req.app.get("db");
+      const { name, email, password } = req.body;
 
-    const userFound = await db.auth.check_user_email({ user_email });
+      let users = await db.findUserByEmail(email);
+      let user = users[0];
 
-    if (userFound[0]) return res.status(409).send("Email already exists");
+      if (user) {
+        return res.status(409).send("email already in db");
+      }
 
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(user_password, salt);
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(password, salt);
 
-    const createdUser = await db.auth.register_user({
-      user_name,
-      user_email,
-      user_password: hash
-    });
+      let response = await db.createUser({ name, email, hash });
+      let newUser = response[0];
 
-    session.user = {
-      id: createdUser[0].user_id,
-      user_name: createdUser[0].user_name
-    };
-    res.status(200).send(session.user);
+      delete newUser.password;
+
+      req.session.user = newUser;
+      res.send(req.session.user);
+    } catch (error) {
+      console.log("there was an error", error);
+      res.status(500).send(error);
+    }
   },
 
   login: async (req, res) => {
-    const { user_name, user_password } = req.body;
-    const db = req.app.get("db");
-    const { session } = req;
-    const userFound = await db.auth.check_username({ user_name });
+    try {
+      const db = req.app.get("db");
+      const { email, password } = req.body;
 
-    if (!userFound[0])
-      return res.status(401).send("That user does not exist, please register");
+      let users = await db.findUserByEmail(email);
+      let user = users[0];
 
-    const authenticated = bcrypt.compareSync(
-      user_password,
-      userFound[0].user_password
-    );
+      if (!user) {
+        return res.status(401).send("email or password incorrect");
+      }
 
-    if (authenticated) {
-      session.user = {
-        id: userFound[0].user_id,
-        user_name: userFound[0].user_name
-      };
-      res.status(200).send(session.user);
-    } else {
-      return res.status(401).send("Incorrect username or password");
+      let isAuthenticated = bcrypt.compareSync(password, user.password);
+
+      if (!isAuthenticated) {
+        return res.status(401).send("email or password incorrect");
+      }
+
+      delete user.password;
+
+      req.session.user = user;
+      res.send(req.session.user);
+    } catch (error) {
+      console.log("there was an error", error);
+      res.status(500).send(error);
     }
   },
 
   logout: (req, res) => {
     req.session.destroy();
     res.sendStatus(200);
+  },
+
+  currentUser: (req, res) => {
+    res.send(req.session.user);
   }
 };
