@@ -1,8 +1,20 @@
-import React from "react";
+import React, { Component } from "react";
 import "./App.css";
+import { connect } from "react-redux";
+import { getUser } from "./ducks/reducers/user";
+import routes from "./routes";
 
-function App() {
-  return <div className="App"></div>;
+class App extends Component {
+  componentDidMount() {
+    this.props.getUser();
+  }
+
+  render() {
+    return <div>{routes}</div>;
+  }
 }
 
-export default App;
+export default connect(
+  null,
+  { getUser }
+)(App);
