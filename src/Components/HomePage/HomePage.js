@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import LoginForm from "../LoginForm/LoginForm";
 import blueLogo from "../../assets/LogoBlue.svg";
-import citrus from "../../assets/bluecitrus.PNG";
+import citrus from "../../assets/bluecitrus.png";
 
 class HomePage extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class HomePage extends Component {
         <Header>
           <Logo>
             <LogoImage src={blueLogo} alt="cal logo" />
-            <LogoText>caltrend</LogoText>
+            <LogoText>foodies</LogoText>
           </Logo>
 
           <Button onClick={this.openLogin}>login/register</Button>
@@ -45,7 +45,7 @@ class HomePage extends Component {
 
         <Welcome>
           <h1>WELCOME</h1>
-          <p>login or register to use caltrend's health tracking tools</p>
+          <p>login or register to use foodies health tracking tools</p>
         </Welcome>
         {this.state.loginForm && <LoginForm closeLogin={this.closeLogin} />}
       </Body>
